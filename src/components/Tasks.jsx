@@ -41,8 +41,10 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
               {task.description ? (
                 <Accordion
                   sx={{
-                    bgcolor: "transparent",
                     width: "100%",
+                    minWidth: "80%",
+                    maxWidth: "100%",
+                    bgcolor: "transparent",
                     "& .MuiAccordionSummary-content": {
                       m: "0px !important",
                     },
@@ -93,7 +95,17 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                       {task.title}
                     </Typography>
                   </AccordionSummary>
-                  <AccordionDetails sx={{ bgcolor: "#383838", color: "gray" }}>
+                  <AccordionDetails
+                    sx={{
+                      bgcolor: "#383838",
+                      color: "gray",
+                      wordWrap: "break-word", // Quebra a linha do texto quando necessário
+                      overflowWrap: "break-word", // Garante que palavras grandes sejam quebradas
+                      whiteSpace: "pre-wrap", // Mantém os espaços e quebras de linha
+                      maxHeight: "200px", // Altura máxima para garantir que o Accordion não ultrapasse o limite
+                      overflowY: "auto", // Adiciona scroll vertical quando o texto é muito grande
+                    }}
+                  >
                     <Typography>{task.description}</Typography>
                   </AccordionDetails>
                 </Accordion>
