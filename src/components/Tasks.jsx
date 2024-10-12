@@ -9,11 +9,13 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Select, MenuItem, FormControl } from "@mui/material";
 
 function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
+  const [sortCriteria, setSortCriteria] = useState("status");
 
   const handleDeleteClick = (taskId) => {
     setTaskToDelete(taskId);
@@ -28,15 +30,97 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
     }
   };
 
+  const selectSortCriteria = (tasks, criteria) => {
+    switch (criteria) {
+      case "date":
+        return [...tasks].sort((a, b) => new Date(b.date) - new Date(a.date));
+      case "status":
+        return [...tasks].sort((a, b) => a.isCompleted - b.isCompleted);
+      default:
+        return tasks;
+    }
+  };
+
+  const handleSortChange = (event) => {
+    setSortCriteria(event.target.value);
+  };
+
+  const sortedTasks = selectSortCriteria(tasks, sortCriteria);
+
   return (
     <>
       <ul className="space-y-3 p-3 sm:p-6 bg-neutral-900 rounded-md shadow-lg">
+        {tasks && tasks.length > 0 && (
+          <>
+            <div className="flex justify-end gap-2 items-center text-xs sm:text-sm md:text-base">
+              <p className="text-slate-400">Sort by</p>
+
+              <FormControl
+                variant="outlined"
+                size="small"
+                sx={{
+                  borderColor: "white",
+                  color: "white",
+                  minWidth: { xs: 80, sm: 100, md: 120 },
+                }}
+              >
+                <Select
+                  labelId="sort-label"
+                  value={sortCriteria}
+                  onChange={handleSortChange}
+                  sx={{
+                    minWidth: { xs: 80, sm: 100, md: 120 },
+                    backgroundColor: "transparent",
+                    color: "white",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#303030",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#505050",
+                    },
+                    "& .MuiSelect-icon": {
+                      color: "white",
+                    },
+                    "& .MuiSelect-select": {
+                      padding: "0.2em 0.4em",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: "#303030",
+                        "& .MuiMenuItem-root": {
+                          color: "rgb(148, 163, 184)",
+                          "&:hover": {
+                            backgroundColor: "#505050",
+                          },
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value="date">Data</MenuItem>
+                  <MenuItem value="status">Status</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            <hr
+              style={{
+                borderColor: "#505050",
+                borderWidth: "1px",
+                opacity: 0.6,
+              }}
+            />
+          </>
+        )}
+
         {tasks == null || tasks.length === 0 ? (
           <p className="text-center text-neutral-500 text-xs sm:text-sm md:text-base lg:text-lg">
             Você não tem tarefas pendentes, comece uma nova.
           </p>
         ) : (
-          tasks.map((task) => (
+          sortedTasks.map((task) => (
             <li key={task.id} className="flex gap-2">
               {task.description ? (
                 <Accordion
@@ -60,7 +144,7 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                       bgcolor: "#262626",
                       color: "white",
                       ":hover": {
-                        bgcolor: "#404040",
+                        bgcolor: "#2D2D2D",
                       },
                       display: "flex",
                       alignItems: "center",
@@ -92,21 +176,33 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                         paddingBottom: "0.2em",
                       }}
                     >
-                      {task.title}
+                      <span
+                        className="text-xs sm:text-sm"
+                        style={{
+                          textDecoration: task.isCompleted
+                            ? "line-through"
+                            : "none",
+                          color: task.isCompleted ? "#6d6d6d" : "inherit",
+                        }}
+                      >
+                        {task.title}
+                      </span>
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails
                     sx={{
                       bgcolor: "#383838",
                       color: "gray",
-                      wordWrap: "break-word", // Quebra a linha do texto quando necessário
-                      overflowWrap: "break-word", // Garante que palavras grandes sejam quebradas
-                      whiteSpace: "pre-wrap", // Mantém os espaços e quebras de linha
-                      maxHeight: "200px", // Altura máxima para garantir que o Accordion não ultrapasse o limite
-                      overflowY: "auto", // Adiciona scroll vertical quando o texto é muito grande
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      whiteSpace: "pre-wrap",
+                      maxHeight: "200px",
+                      overflowY: "auto",
                     }}
                   >
-                    <Typography>{task.description}</Typography>
+                    <Typography sx={{ fontSize: "0.85rem" }}>
+                      {task.description}
+                    </Typography>
                   </AccordionDetails>
                 </Accordion>
               ) : (
@@ -143,9 +239,20 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                       alignItems: "center",
                       justifyContent: "center",
                       marginLeft: "0.2em",
+                      paddingBottom: "0.2em",
                     }}
                   >
-                    {task.title}
+                    <span
+                      className="text-xs sm:text-sm"
+                      style={{
+                        textDecoration: task.isCompleted
+                          ? "line-through"
+                          : "none",
+                        color: task.isCompleted ? "#6d6d6d" : "inherit",
+                      }}
+                    >
+                      {task.title}
+                    </span>
                   </Typography>
                 </div>
               )}
@@ -154,17 +261,18 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
+                  transition:
+                    "background-color 0.7s ease, border-color 0.7s ease",
+                  border: "2px solid transparent",
                 }}
                 onMouseEnter={() => setHoveredTaskId(task.id)}
                 onMouseLeave={() => setHoveredTaskId(null)}
-                className="bg-neutral-800 p-3 rounded-md flex items-center transition-colors duration-300"
+                className={`bg-neutral-800 p-3 rounded-md flex items-center transition-colors duration-300 ${
+                  hoveredTaskId === task.id ? "bg-red-500 border-white" : ""
+                }`}
                 onClick={() => handleDeleteClick(task.id)}
               >
-                <TrashIcon
-                  color={
-                    hoveredTaskId === task.id ? "white" : "rgb(135, 58, 58)"
-                  }
-                />
+                <TrashIcon color="white" size={24} />
               </button>
             </li>
           ))
@@ -175,6 +283,7 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
+        message="Tem certeza de que deseja excluir esta tarefa?"
       />
     </>
   );

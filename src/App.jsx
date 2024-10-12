@@ -4,10 +4,18 @@ import AddTask from "./components/AddTask";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import TitleErrorModal from "./components/TitleErrorModal";
 import { v4 as uuidv4 } from "uuid";
+import { formatISO } from "date-fns";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(
+    JSON.parse(localStorage.getItem("tasks")) || []
+  );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const onCompleteTaskClick = (taskId) => {
     setTasks(
@@ -30,6 +38,7 @@ function App() {
 
     const newTask = {
       id: uuidv4(),
+      date: formatISO(new Date()),
       title: title,
       description: description,
       isCompleted: false,

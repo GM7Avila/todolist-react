@@ -26,6 +26,7 @@ function AddTask({ onAddTaskSubmit }) {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Título"
         className="p-2 sm:p-3 rounded-md bg-neutral-800 text-white placeholder:text-neutral-600 border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+        maxLength={30} // Limite de caracteres atualizado para 30
       />
       <input
         type="text"
