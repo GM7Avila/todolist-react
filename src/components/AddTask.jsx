@@ -1,11 +1,12 @@
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ErrorModal from "./TitleErrorModal";
 
-function AddTask({ onAddTaskSubmit }) {
+function AddTask({ onAddTaskSubmit, focusInput }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const titleInputRef = useRef(null); // Referência para o input do título
 
   const handleAddTask = () => {
     if (!title.trim()) {
@@ -17,6 +18,11 @@ function AddTask({ onAddTaskSubmit }) {
     setDescription("");
   };
 
+  // Função para focar no input de título
+  focusInput.current = () => {
+    titleInputRef.current.focus();
+  };
+
   return (
     <div className="space-y-4 p-4 sm:p-6 bg-neutral-900 rounded-md flex flex-col">
       <h2 className="text-xl sm:text-2xl text-slate-400">Nova Tarefa</h2>
@@ -24,9 +30,10 @@ function AddTask({ onAddTaskSubmit }) {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Título"
+        placeholder="Título*"
         className="p-2 sm:p-3 rounded-md bg-neutral-800 text-white placeholder:text-neutral-600 border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
         maxLength={30} // Limite de caracteres atualizado para 30
+        ref={titleInputRef} // Referência do input de título
       />
       <input
         type="text"

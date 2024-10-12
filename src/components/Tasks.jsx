@@ -75,7 +75,15 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
           </p>
         ) : (
           sortedTasks.map((task) => (
-            <li key={task.id} className="flex gap-2">
+            <li
+              key={task.id}
+              className="flex gap-2"
+              style={{
+                transition: "transform 0.3s ease, opacity 0.3s ease",
+                opacity: task.isCompleted ? 0.5 : 1,
+                transform: task.isCompleted ? "scale(0.98)" : "scale(1)",
+              }}
+            >
               {task.description ? (
                 <Accordion
                   sx={{
