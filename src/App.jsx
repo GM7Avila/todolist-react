@@ -12,6 +12,7 @@ function App() {
   const [tasks, setTasks] = useState(
     JSON.parse(localStorage.getItem("tasks")) || []
   );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddTaskVisible, setIsAddTaskVisible] = useState(true);
 
@@ -125,6 +126,7 @@ function App() {
         </div>
 
         <Tasks
+          setTasks={setTasks}
           tasks={tasks}
           onCompleteTaskClick={onCompleteTaskClick}
           onDeleteTaskClick={onDeleteTaskClick}

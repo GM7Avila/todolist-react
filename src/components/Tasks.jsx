@@ -1,6 +1,9 @@
 import { Checkbox } from "@mui/material";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
+import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react";
 import AlertDialogModal from "./AlertDialogModal";
@@ -8,14 +11,18 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortMenu from "./SortMenu";
+import SimpleSnackbar from "./SimpleSnackbar";
 
-function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
+function Tasks({ setTasks, tasks, onCompleteTaskClick, onDeleteTaskClick }) {
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [sortCriteria, setSortCriteria] = useState("status");
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [tasksTemp, setTasksTemp] = useState(
+    JSON.parse(localStorage.getItem("temp-tasks")) || []
+  );
 
   const handleDeleteClick = (taskId) => {
     setTaskToDelete(taskId);
@@ -23,6 +30,8 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
   };
 
   const handleConfirmDelete = () => {
+    setTasksTemp(tasks);
+
     if (taskToDelete !== null) {
       onDeleteTaskClick(taskToDelete);
       setTaskToDelete(null);
@@ -45,10 +54,33 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
     setSortCriteria(option);
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setIsSnackbarOpen(false);
+    setTasksTemp([]);
+  };
+
+  const undoAction = () => {
+    setTasks(tasksTemp);
+  };
+
   const sortedTasks = selectSortCriteria(tasks, sortCriteria);
 
   return (
     <>
+      {console.log(tasks)}
+      {console.log(tasksTemp)}
+      <SimpleSnackbar
+        message={"Tarefa arquivada"}
+        isSnackbarOpen={isSnackbarOpen}
+        setIsSnackbarOpen={setIsSnackbarOpen}
+        handleSnackbarClose={handleSnackbarClose}
+        undoAction={undoAction}
+      />
+
       <ul className="space-y-3 p-3 sm:p-6 bg-neutral-900 rounded-md shadow-lg">
         {tasks && tasks.length > 0 && (
           <>
@@ -90,7 +122,7 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                     width: "100%",
                     minWidth: "80%",
                     maxWidth: "100%",
-                    bgcolor: "transparent",
+                    bgcolor: "#262626",
                     "& .MuiAccordionSummary-content": {
                       m: "0px !important",
                     },
@@ -232,7 +264,9 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
                 className={`bg-neutral-800 p-3 rounded-md flex items-center transition-colors duration-300 ${
                   hoveredTaskId === task.id ? "bg-red-500 border-white" : ""
                 }`}
-                onClick={() => handleDeleteClick(task.id)}
+                onClick={() => {
+                  handleDeleteClick(task.id);
+                }}
               >
                 <TrashIcon color="white" size={24} />
               </button>
@@ -246,6 +280,7 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
         onClose={() => setOpenDialog(false)}
         onConfirm={handleConfirmDelete}
         message="Tem certeza de que deseja excluir esta tarefa?"
+        setIsSnackbarOpen={setIsSnackbarOpen}
       />
     </>
   );

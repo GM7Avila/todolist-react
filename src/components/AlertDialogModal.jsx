@@ -8,7 +8,7 @@ import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 
-const AlertDialogModal = ({ open, onClose, onConfirm }) => {
+const AlertDialogModal = ({ open, onClose, onConfirm, setIsSnackbarOpen }) => {
   return (
     <Modal open={open} onClose={onClose}>
       <ModalDialog
@@ -30,7 +30,14 @@ const AlertDialogModal = ({ open, onClose, onConfirm }) => {
           Você tem certeza que deseja excluir esta tarefa?
         </DialogContent>
         <DialogActions>
-          <Button variant="solid" color="danger" onClick={onConfirm}>
+          <Button
+            variant="solid"
+            color="danger"
+            onClick={() => {
+              onConfirm();
+              setIsSnackbarOpen(true);
+            }}
+          >
             Excluir
           </Button>
           <Button
