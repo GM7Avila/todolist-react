@@ -6,7 +6,7 @@ function AddTask({ onAddTaskSubmit, focusInput }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const titleInputRef = useRef(null); // Referência para o input do título
+  const titleInputRef = useRef(null);
 
   const handleAddTask = () => {
     if (!title.trim()) {
@@ -18,7 +18,6 @@ function AddTask({ onAddTaskSubmit, focusInput }) {
     setDescription("");
   };
 
-  // Função para focar no input de título
   focusInput.current = () => {
     titleInputRef.current.focus();
   };
@@ -32,8 +31,8 @@ function AddTask({ onAddTaskSubmit, focusInput }) {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Título*"
         className="p-2 sm:p-3 rounded-md bg-neutral-800 text-white placeholder:text-neutral-600 border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-        maxLength={30} // Limite de caracteres atualizado para 30
-        ref={titleInputRef} // Referência do input de título
+        maxLength={30}
+        ref={titleInputRef}
       />
       <input
         type="text"
