@@ -9,7 +9,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Select, MenuItem, FormControl } from "@mui/material";
+import SortMenu from "./SortMenu";
 
 function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
@@ -41,8 +41,8 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
     }
   };
 
-  const handleSortChange = (event) => {
-    setSortCriteria(event.target.value);
+  const handleSortChange = (option) => {
+    setSortCriteria(option);
   };
 
   const sortedTasks = selectSortCriteria(tasks, sortCriteria);
@@ -53,56 +53,10 @@ function Tasks({ tasks, onCompleteTaskClick, onDeleteTaskClick }) {
         {tasks && tasks.length > 0 && (
           <>
             <div className="flex justify-end gap-2 items-center text-xs sm:text-sm md:text-base">
-              <p className="text-slate-400">Sort by</p>
-
-              <FormControl
-                variant="outlined"
-                size="small"
-                sx={{
-                  borderColor: "white",
-                  color: "white",
-                  minWidth: { xs: 80, sm: 100, md: 120 },
-                }}
-              >
-                <Select
-                  labelId="sort-label"
-                  value={sortCriteria}
-                  onChange={handleSortChange}
-                  sx={{
-                    minWidth: { xs: 80, sm: 100, md: 120 },
-                    backgroundColor: "transparent",
-                    color: "white",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#303030",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#505050",
-                    },
-                    "& .MuiSelect-icon": {
-                      color: "white",
-                    },
-                    "& .MuiSelect-select": {
-                      padding: "0.2em 0.4em",
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        backgroundColor: "#303030",
-                        "& .MuiMenuItem-root": {
-                          color: "rgb(148, 163, 184)",
-                          "&:hover": {
-                            backgroundColor: "#505050",
-                          },
-                        },
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem value="date">Data</MenuItem>
-                  <MenuItem value="status">Status</MenuItem>
-                </Select>
-              </FormControl>
+              <SortMenu
+                handleSortChange={handleSortChange}
+                sortCriteria={sortCriteria}
+              />
             </div>
 
             <hr

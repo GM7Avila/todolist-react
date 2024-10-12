@@ -52,7 +52,7 @@ function App() {
   }, [tasks]);
 
   return (
-    <div className="w-screen h-screen bg-neutral-950 flex justify-center p-4 sm:p-6">
+    <div className="w-screen min-h-screen bg-neutral-950 flex justify-center p-4 sm:p-6">
       <div className="w-[90vw] sm:w-[70vw] lg:w-[60vw] space-y-5">
         <h1 className="text-2xl sm:text-3xl text-blue-50 font-bold text-center mt-2 mb-10">
           <DoneOutlineIcon
